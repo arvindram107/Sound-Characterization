@@ -18,4 +18,7 @@ A quick glance at the code reveals that you can start or stop the ASIO streaming
 
 The next version will enable you to do some simple surgery on the signals you have recorded starting with a visualization interface whose sound production can be calibrated with its signal display. This means you can tune out the latencies that normally exist in such systems for a real-time responce. Subsequently, we will build in tools to visualize the input tracks live in an effective way, with the same or similar signal surgery capabilities. After that we'll start building a sound based interface to this app to short out the role of the control room PC in the process. That will split our efforts into two tracks. One to better characterize the tanpura and the other to design and build sound based studio interfaces.
 
+We intend to release our first music piece, a ballad about Khitchdee called "Fat lie kebab -- it's a big fat lie" on Jan 14th. Our initial efforts will be focused on that until that date. It's tentatively got the following tracks in it: 1) A tanpura drone at 275Hz which we want in synth. 2) Some tabla loops in a eleven beat rhythm called step_eleven also in synth, 3) A vocal and acoustic guitar track that will be played live. There may be some multi-tracking involved.
+
+
 
