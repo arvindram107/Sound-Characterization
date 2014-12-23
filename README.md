@@ -2,7 +2,7 @@ Sound-Characterization
 ======================
 
 Join us to try some retro style coding on some retro style music.
-We design algorithms to characterize music, in C for pre-Win8 windows.
+We design algorithms to characterize the sounds around us, in C for pre-Win8 windows.
 Project blog at http://chaelaa.wordpress.com
 
 A little history:
