@@ -22,5 +22,14 @@ We intend to release our first music piece, a ballad about Khitchdee called "Fat
 
 To create the tanpura drone, we just need to tune a tanpura well to a played back 275Hz tone, then splice out a set of loops from the recording and in the playback, cross fade the ends. We need some controls for the location of the cross-fades and the identification of a good segment for splicing out. The tabla will also be a fixed length track that needs to be looped. We'll have to figure out a way to splice the tabla strip into a loop without any discernible distortions at the joint. We'll create signal surgery tools for the tanpura and the tabla.
 
+The following steps are needed to achieve these results:
+1. Revamp the code to either just play the tuning tone or switch it off and record on cue.
+2. Create a function to read the recorded file and one to display it. Create a UX protocol for the display and editing and playback for the tanpura and implement it in a hard coded way for now. 
+3. Do the same for the tabla.
+4. Add multi-tracking with proper synchronization of synth tracks with the live track. In a later release, a proper calibration function may be added here to calibrate any given sound setup.
+5. Encode the output in some appropriate format like .mp3
+
+The tanpura's UX protocol:
+
 
 
