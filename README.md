@@ -30,6 +30,7 @@ The following steps are needed to achieve these results:
 5. Encode the output in some appropriate format like .mp3
 
 The tanpura's UX protocol:
+On the input side, we don't use the mouse at all. Instead, for each protocol element, we design a mapping of the keyboard that maps different sets of keys to different input functions. Some mappings are very detailed in temrs of how many different functions thay can support and are used by many different protocol elements. They keyboard input handler for the app loads one of many different UX protocol states. Each such state loads a set of UX protocol elements and maps their keyboard response functions to the desired set of actions for the differents sets of key in the input map. The desired action may perform some core action such as storing a file, or it may also display infomration back to the user. On the output side, we don't use windows and go full-screen and we use only a 400x240 sub-area in the center of the screen. Using this general UX protocol implementation architecture, we can now design the tanpura's specific UX protocol.
 
 
 
