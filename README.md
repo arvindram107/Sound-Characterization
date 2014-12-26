@@ -43,6 +43,11 @@ To design a UX protocol for some assisted activity, you help it's user identify 
 Let's go through this process for the tanpura characterizer.
 "To create the tanpura drone, we just need to tune a tanpura well to a played back 275Hz tone, then splice out a set of loops from the recording and in the playback, cross fade the ends. We need some controls for the location of the cross-fades and the identification of a good segment for splicing out."
 
+Aside: We use a simple format to describe the UX protocol. For now, the protocol consists of a series of interactive segments. Segments can be free-flow, where there are no time-constraints or rhythm-bound. Describing a protocol hence consists of identifying the type, characteristics and sequence of interactive segments in the interaction. Later, as part of a separate project (Retro-coding) we will use this format to automatically generate the source code for a retro style Khitchdee app. This will greatly simplify the app building process and leave the programmer mainly with the identification of what they want the app to do for their user and only having to write the code for new functions added to the codebase.
+
+
+
+
 
 
 
