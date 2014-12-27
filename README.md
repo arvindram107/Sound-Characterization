@@ -79,9 +79,24 @@ As a first step, let's get the UI to work with place-holders for all the require
 Analyzing the list of activities in the session, we need to flesh out the following:
 7. Identifying a good segment of the tanpura and looping it.
 13. Identifying segments of the tabla to be used for the step_eleven loops to be used by the synth.
-19. Playing the tanpura, tabla and the live tracks, all synchronized properly into the headphones
 20. Multi-tracking
-21. Saving the 2-track mix-down output to a .wav
+
+7a Calibrating out the playback & waveform display latency
+7b Selecting the loop end-points
+7c Selecting the fade interval
+7d Testing the loop
+back to 7b or done (save the tanpura and loop).
+
+13a Selecting a segment
+13b Tesing it in step_eleven
+back to 13a or done
+
+20a Selecting which tracks to play and their gains
+20b Recording the new tracks
+20c Adjusting levels and reviewing.
+20d. Final mix-down, saving out the multitrack file descriptor and the .wav file
+
+
 
 
 
