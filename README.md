@@ -86,9 +86,7 @@ Analyzing the list of activities in the session, we need to flesh out the follow
 7c Selecting the fade interval
 back to 7b or done (save the tanpura and loop).
 
-13a Selecting a segment
-13b Testing it in step_eleven
-back to 13a or done
+13a Selecting a segment and testing it in step_eleven
 
 20a Selecting which tracks to play and their gains
 20b Recording the new tracks
@@ -104,7 +102,7 @@ back to 13a or done
 7b(iii) Playing the tanpura. Tapping Caps Lock to identify gross start point and Enter to identify end point. App zooms in to gross segment, play it back again. ID process repeated, until user presses 'h'. 
 7c(i) App loads currently chosen segment and default fade interval. Plays back the loop-joint on space bar. User changes the fade interval to tune it using the center strip, with Caps Lock for extreme reduction and enter for extreme increment. Repeats the preview process until satisfied (they press 'h')
 
-13a
+13a Selecting a segment from the recorded tabla is slightly different than the one for the tanpura. In this case we need much greater accurracy in the location of the segment end-points. We also need a way of fine-tuning the playback. By default, the synth will take the designated (1,2,3,4) segment and use it to generate sub-segments for (1,2,3), (1,2) and (1). The step_eleven sequence will then be played as the origional segment sequenced with the 3 generated segments and a period of silence. For starters, we will only enable readjustment of the start and points of the origional segment for fine-tuning of the playback. Later will will see if we need to do any blends at the segment boundaries. After a coarse selection using the Caps Lock and Enter driven timing markers, the selection of these end points will be done mostly using visual cues since we know the visual are timing calibrated with the sound. The center strip can be used for this as was used for the fade interval adjustment.
 
 
 
