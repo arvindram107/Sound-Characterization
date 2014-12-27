@@ -52,7 +52,6 @@ A typical session with this app will involve the following:
 4. Playing the tanpura for a while (in the recording room).
 5. Pressing space bar to stop the recording and save it to a time-stamped file (in the control room)
 Editing the loop in the control room
-6. Selecting file to edit by time stamp.
 7. Identifying a good segment of the tanpura. Start and end points and fade-in and fade-out points need to be identified.
 8. Playing back the loop into recording room headphones.
 9. Tuning the tabla.
@@ -75,8 +74,14 @@ Now, we need two things to build the system:
 
 2. Let's also identify the processing functions that need to be built to realize the system. 
 
-As a first step, let's get the UI to work with place-holders for all the required functions. Then we can realize the behavior behind the UI.
+As a first step, let's get the UI to work with place-holders for all the required functions. Then we can realize the behavior behind the UI. Let's design the grand state machine that will realize each of the segments in the session. That will fully define the UI.
 
+Analyzing the list of activities in the session, we need to flesh out the following:
+7. Identifying a good segment of the tanpura and looping it.
+13. Identifying segments of the tabla to be used for the step_eleven loops to be used by the synth.
+19. Playing the tanpura, tabla and the live tracks, all synchronized properly into the headphones
+20. Multi-tracking
+21. Saving the 2-track mix-down output to a .wav
 
 
 
