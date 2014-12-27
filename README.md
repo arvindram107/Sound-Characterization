@@ -96,8 +96,9 @@ back to 13a or done
 20c Adjusting levels and reviewing.
 20d. Final mix-down, saving out the multitrack file descriptor and the .wav file
 
-
-
+7a(i) Measuring space-bar press system latency
+7a(ii) The app generating and displaying a waveform with a sequence of spikes
+7a(iii) Playing back the spike waveform and scrolling the waveform based on latency numbers predicted by ASIO. Listening to the sounds, looking at the display and tapping space bar on the spike. App displays location of space-bar tap relative to spike (while factoring in space-bar press system latencies) to identify residual latencies. Storing residual latency in a global.
 
 
 
