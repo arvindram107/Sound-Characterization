@@ -88,10 +88,7 @@ back to 7b or done (save the tanpura and loop).
 
 13a Selecting a segment and testing it in step_eleven
 
-20a Selecting which tracks to play and their gains
-20b Recording the new tracks
-20c Adjusting levels and reviewing.
-20d. Final mix-down, saving out the multitrack file descriptor and the .wav file
+20 Selecting which tracks to play and to record and their gains
 
 7a(i) Measuring space-bar press system latency
 7a(ii) The app generating and displaying a waveform with a sequence of spikes
@@ -104,6 +101,9 @@ back to 7b or done (save the tanpura and loop).
 
 13a Selecting a segment from the recorded tabla is slightly different than the one for the tanpura. In this case we need much greater accurracy in the location of the segment end-points. We also need a way of fine-tuning the playback. By default, the synth will take the designated (1,2,3,4) segment and use it to generate sub-segments for (1,2,3), (1,2) and (1). The step_eleven sequence will then be played as the origional segment sequenced with the 3 generated segments and a period of silence. For starters, we will only enable readjustment of the start and points of the origional segment for fine-tuning of the playback. Later will will see if we need to do any blends at the segment boundaries. After a coarse selection using the Caps Lock and Enter driven timing markers, the selection of these end points will be done mostly using visual cues since we know the visual are timing calibrated with the sound. The center strip can be used for this as was used for the fade interval adjustment.
 
+20 Selecting which tracks to play and their gains
+'h' key to select tanpura synth, Caps Lock or Enter to select tabla synth and space bar to select any live recorded track. With each of the synth dialogs, user sets level with center strip. With the live track dialog, user scrolls through the tracks, presses space bar to select, then sets level with a center strip. Tracks to be recorded are treated the same way. By default the to be recorded tracks always have maximum gain. 'h' key to exit live track dialog. Now space bar to start playback/recording, then space bar again to stop. App automatically stops playback at end of file. 'h' key to save the mix-down in a .wav and the mix parameters in a new multi-track file format. 
 
+Now, let's scope out what major functions ned to be implemented to get all this to work.
 
 
