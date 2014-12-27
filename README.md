@@ -69,6 +69,14 @@ Editing the loop in the control room
 20. Multi-tracking
 21. Saving the 2-track mix-down output to a stereo file format.
 
+Now, we need two things to build the system:
+
+1. Let's now organize the session into a series of segments, each one represented by a distinct state machine, with states represented by a keyboard map and the actions to be made in response to the allowed key-strikes (from the map). Those actions would consist of executing some functions and drawing on the screen. 
+
+2. Let's also identify the processing functions that need to be built to realize the system. 
+
+As a first step, let's get the UI to work with place-holders for all the required functions. Then we can realize the behavior behind the UI.
+
 
 
 
