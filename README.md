@@ -45,6 +45,30 @@ Let's go through this process for the tanpura characterizer.
 
 Aside: We use a simple format to describe the UX protocol. For now, the protocol consists of a series of interactive segments. Segments can be free-flow, where there are no time-constraints or rhythm-bound. Describing a protocol hence consists of identifying the type, characteristics and sequence of interactive segments in the interaction. Later, as part of a separate project (Retro-coding) we will use this format to automatically generate the source code for a retro style Khitchdee app. This will greatly simplify the app building process and leave the programmer mainly with the identification of what they want the app to do for their user and only having to write the code for new functions added to the codebase.
 
+A typical session with this app will involve the following:
+1. Launching the app which plays the 275Hz tone into the headphone feed in the recording room.
+2. Tuning the tanpura (in the recording room).
+3. Pressing space bar to stop the tone and start the recording (in the control room).
+4. Playing the tanpura for a while (in the recording room).
+5. Pressing space bar to stop the recording and save it to a time-stamped file (in the control room)
+Editing the loop in the control room
+6. Selecting file to edit by time stamp.
+7. Identifying a good segment of the tanpura. Start and end points and fade-in and fade-out points need to be identified.
+8. Playing back the loop into recording room headphones.
+9. Tuning the tabla.
+10. Starting the recording of the tabla sample.
+11. Playing the tabla
+12. Stopping the recording.
+13. Identifying segments of the tabla to be used for the step_eleven loops to be used by the synth.
+14. Playing the tanpura and the tabla into the headphones.
+15. Tuning the guitar
+16. Starting the recording of the song
+17. Live track recording
+18. Stopping the live track recording
+19. Playing the tanpura, tabla and the live tracks, all synchronized properly into the headphones
+20. Multi-tracking
+21. Saving the 2-track mix-down output to a stereo file format.
+
 
 
 
