@@ -84,11 +84,10 @@ Analyzing the list of activities in the session, we need to flesh out the follow
 7a Calibrating out the playback & waveform display latency
 7b Selecting the loop end-points
 7c Selecting the fade interval
-7d Testing the loop
 back to 7b or done (save the tanpura and loop).
 
 13a Selecting a segment
-13b Tesing it in step_eleven
+13b Testing it in step_eleven
 back to 13a or done
 
 20a Selecting which tracks to play and their gains
@@ -100,7 +99,12 @@ back to 13a or done
 7a(ii) The app generating and displaying a waveform with a sequence of spikes
 7a(iii) Playing back the spike waveform and scrolling the waveform based on latency numbers predicted by ASIO. Listening to the sounds, looking at the display and tapping space bar on the spike. App displays location of space-bar tap relative to spike (while factoring in space-bar press system latencies) to identify residual latencies. Storing residual latency in a global.
 
+7b(i) The app loading the stereo tanpura and displaying it.
+7b(ii) Trimming out the ends.
+7b(iii) Playing the tanpura. Tapping Caps Lock to identify gross start point and Enter to identify end point. App zooms in to gross segment, play it back again. ID process repeated, until user presses 'h'. 
+7c(i) App loads currently chosen segment and default fade interval. Plays back the loop-joint on space bar. User changes the fade interval to tune it using the center strip, with Caps Lock for extreme reduction and enter for extreme increment. Repeats the preview process until satisfied (they press 'h')
 
+13a
 
 
 
