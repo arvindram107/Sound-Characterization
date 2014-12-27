@@ -106,4 +106,18 @@ back to 7b or done (save the tanpura and loop).
 
 Now, let's scope out what major functions ned to be implemented to get all this to work.
 
+Revision of the recording function. (to include time-stamping and content description)
+Waveform generator to generate a sequence of spikes
+Scrolling and zooming waveform display
+Stored raw file player
+Tanpura synth (segment player with cross fading)
+step_eleven tabla synth
+Mixer
+
+For starters, we won't do any streaming. Instead we'll load and keep all raw files entirely in memory. Since our song is pretty short, this wont be a size problem.
+
+Now we need to scope out the remaining tasks and see how we can deliver by the 14th.
+
+
+
 
