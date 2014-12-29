@@ -104,20 +104,21 @@ back to 7b or done (save the tanpura and loop).
 20 Selecting which tracks to play and their gains
 'h' key to select tanpura synth, Caps Lock or Enter to select tabla synth and space bar to select any live recorded track. With each of the synth dialogs, user sets level with center strip. With the live track dialog, user scrolls through the tracks, presses space bar to select, then sets level with a center strip. Tracks to be recorded are treated the same way. By default the to be recorded tracks always have maximum gain. 'h' key to exit live track dialog. Now space bar to start playback/recording, then space bar again to stop. App automatically stops playback at end of file. 'h' key to save the mix-down in a .wav and the mix parameters in a new multi-track file format. 
 
-Now, let's scope out what major functions ned to be implemented to get all this to work.
+Now, let's scope out what major functions need to be implemented to get all this to work.
 
-Revision of the recording function. (to include time-stamping and content description)
-Waveform generator to generate a sequence of spikes
-Scrolling and zooming waveform display
-Stored raw file player
-Tanpura synth (segment player with cross fading)
-step_eleven tabla synth
-Mixer
+- Revision of the recording function. (to include time-stamping and content description)
+- Waveform generator to generate a sequence of spikes.
+- Scrolling and zooming waveform display
+- Stored raw file player
+- Tanpura synth (segment player with cross fading)
+- step_eleven tabla synth
+- Mixer
 
 For starters, we won't do any streaming. Instead we'll load and keep all raw files entirely in memory. Since our song is pretty short, this wont be a size problem.
 
 Now we need to scope out the remaining tasks and see how we can deliver by the 14th.
-
+28/12/14 Sunday off
+29/12/14
 
 
 
