@@ -117,7 +117,9 @@ Now, let's scope out what major functions need to be implemented to get all this
 For starters, we won't do any streaming. Instead we'll load and keep all raw files entirely in memory. Since our song is pretty short, this wont be a size problem.
 
 Now we need to scope out the remaining tasks and see how we can deliver by the 14th.
+
 28/12/14 Sunday off
+
 29/12/14
 
 
