@@ -99,7 +99,7 @@ back to 7b or done (save the tanpura and loop).
 7b(iii) Playing the tanpura. Tapping Caps Lock to identify gross start point and Enter to identify end point. App zooms in to gross segment, play it back again. ID process repeated, until user presses 'h'. 
 7c(i) App loads currently chosen segment and default fade interval. Plays back the loop-joint on space bar. User changes the fade interval to tune it using the center strip, with Caps Lock for extreme reduction and enter for extreme increment. Repeats the preview process until satisfied (they press 'h')
 
-13a Selecting a segment from the recorded tabla is slightly different than the one for the tanpura. In this case we need much greater accurracy in the location of the segment end-points. We also need a way of fine-tuning the playback. By default, the synth will take the designated (1,2,3,4) segment and use it to generate sub-segments for (1,2,3), (1,2) and (1). The step_eleven sequence will then be played as the origional segment sequenced with the 3 generated segments and a period of silence. For starters, we will only enable readjustment of the start and points of the origional segment for fine-tuning of the playback. Later will will see if we need to do any blends at the segment boundaries. After a coarse selection using the Caps Lock and Enter driven timing markers, the selection of these end points will be done mostly using visual cues since we know the visual are timing calibrated with the sound. The center strip can be used for this as was used for the fade interval adjustment.
+13a Selecting a segment from the recorded tabla is slightly different than the one for the tanpura. In this case we need much greater accurracy in the location of the segment end-points. We also need a way of fine-tuning the playback. By default, the synth will take the designated (1,2,3,4) segment and use it to generate sub-segments for (1,2,3), (1,2) and (1). The step_eleven sequence will then be played as the origional segment sequenced with the 3 generated segments and a period of silence. For starters, we will only enable readjustment of the start and end points of the origional segment for fine-tuning of the playback. Later will will see if we need to do any blends at the segment boundaries. After a coarse selection using the Caps Lock and Enter driven timing markers, the selection of these end points will be done mostly using visual cues since we know the visual are timing calibrated with the sound. The center strip can be used for this as was used for the fade interval adjustment.
 
 20 Selecting which tracks to play and their gains
 'h' key to select tanpura synth, Caps Lock or Enter to select tabla synth and space bar to select any live recorded track. With each of the synth dialogs, user sets level with center strip. With the live track dialog, user scrolls through the tracks, presses space bar to select, then sets level with a center strip. Tracks to be recorded are treated the same way. By default the to be recorded tracks always have maximum gain. 'h' key to exit live track dialog. Now space bar to start playback/recording, then space bar again to stop. App automatically stops playback at end of file. 'h' key to save the mix-down in a .wav and the mix parameters in a new multi-track file format. 
@@ -121,6 +121,26 @@ Now we need to scope out the remaining tasks and see how we can deliver by the 1
 28/12/14 Sunday off
 
 29/12/14
+
+Let's design the state machine for steps of 1 through 8 of the interaction, upto the point where we have properly looped tuned tanpura and are ready to get on with the tabla. By doing this we'll get the kinks out of the process making the remaining steps a little easier to put together. This is the part of the process we'd like to automate with our Retro-Coding project.
+
+If we think of the interaction session as an interactive movie track, that track has the following phases in the process:
+
+1-3 Playing the 275Hz tone
+3-5 Recording the tanpura
+7. Editing the recording and creating the loop
+8. Playing the loop out the headphones
+
+Phases (1-3) and (3-5) end with space bar taps, they are both simple states to implement.
+Let's design the state machine for phase 7.
+There are 3 steps and they have th following sub-steps
+
+7a: (i), (ii) and (iii),
+7b: (i), (ii) and (iii),
+7c: Just one
+
+We'll now create a codebase that will realize our goals and check it in.
+
 
 
 
