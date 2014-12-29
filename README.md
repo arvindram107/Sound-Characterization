@@ -114,7 +114,7 @@ Now, let's scope out what major functions need to be implemented to get all this
 - step_eleven tabla synth
 - Mixer
 
-For starters, we won't do any streaming. Instead we'll load and keep all raw files entirely in memory. Since our song is pretty short, this wont be a size problem.
+For starters, we won't do any streaming. Instead we'll load and keep all raw files entirely in memory. Since our song is pretty short, we won't have to worry about running out of memory.
 
 Now we need to scope out the remaining tasks and see how we can deliver by the 14th.
 
