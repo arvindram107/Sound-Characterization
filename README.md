@@ -36,7 +36,8 @@ The basic steps that need be followed to design any UX protocol for a given inte
 
 26/12/14
 
-There's one constraint that we follow that relates to how time is organized during an interaction session with a retro Khitchdee app. We organize the timing of protocol events in sync with a rhythm. Currently we use an 11 steprhythm that we designed ourselves that goes like 1,2,3,4, 1,2,3 1,2 1, _. 11 is a prime number and we wanted to choose a rhythm that was distinct from all the other rhythms that we find around us, included those in music and in movies, ticking clocks, the sound of a horse's feet on the road as it runs. Having a distinct timing pattern helps keep out disturbances since they get cancelled out by the pattern. Of course this constraint is not neccasary and it's possible to build a retro Khitchdee UX protocol without conforming to any pre-determined time organization. However, this does have benefits when it comes to time management since an organized flow of time is slightly easier to manage. The level of predictability goes up. Our rhythm is called step_eleven and if you follow tabla terminology for describing a rhythm, it has 5 parts (called vibhaags in tabla) of 4,3,2,1 and 1 clock respectively. The last interval is meant to be a blank which marks the start of the next rhythm cycle. In tabla terminology, this is called a khaali and the baayan of the tabla does not boom during this time. Each of the other four parts starts with an emphasis which is called a taali in tabla which means clap. If you were to demonstrate step_eleven with just clapping, you would clap at each of the taalis, which means the first, fifth, eight and tenth clock. This taal (or rhythm) has 4 taalis and one khaali. This is rather unusual for a taal since the khaali is so short. A more typical taal such as teen taal has four equally spaced vibhaags of four clocks each. The entire third vibhaag is khaali hence in terms of ratios, 1/4 of the time is khaali and 3/4 has taalis. This is a more typical distribution. This uneven distribution makes step_eleven rather choppy. Intuitively, this choppiness should be good for a UX protocol that is trying to help its user focus on the app they are interacting with through this protocol. All actions in the protocol, both by the user and the app occur at the taalis and never in between. This is along the lines of conventions used in vocal music on laying out the music over a rhythm (we don't go off-beat yet). The description of the UX protocol then becomes a series of actions by the user or by the app that occur at the taalis of step_eleven. Of course we need a preamble in the protocol where the clock gets initialized and also ways to stop the clock or adjust it anytime during the session. In terms of roles played by the two agents in the conversation, the user plays the role of guru and the app the role of chaelaa (sidekick).
+There's one constraint that we follow that relates to how time is organized during an interaction session with a retro Khitchdee app. We organize the timing of protocol events in sync with a rhythm. Currently we use an 11 steprhythm that we designed ourselves that goes like 1,2,3,4, 1,2,3 1,2 1, _. 11 is a prime number and we wanted to choose a rhythm that was distinct from all the other rhythms that we find around us, included those in music and in movies, ticking clocks, the sound of a horse's feet on the road as it runs. Having a distinct timing pattern helps keep out disturbances since they get cancelled out by the pattern. Of course this constraint is not neccasary and it's possible to build a retro Khitchdee UX protocol without conforming to any pre-determined time organization. However, this does have benefits when it comes to time management since an organized flow of time is slightly easier to manage. The level of predictability goes up. Our rhythm is called step_eleven and if you follow tabla terminology for describing a rhythm, it has 5 parts (called vibhaags in tabla) of 4,3,2,1 and 1 clock respectively. The last interval is meant to be a blank which marks the start of the next rhythm cycle. In tabla terminology, this is called a khaali and the baayan of the tabla does not boom during this time. Each of the other four parts starts with an emphasis which is called a taali in tabla which means clap. If you were to demonstrate step_eleven with just clapping, you would clap at each of the taalis, which means the first, fifth, eight and tenth clock. This taal (or rhythm) has 4 taalis and one khaali. This is rather unusual for a taal since the khaali is so short. A more typical taal such as teen taal has four equally spaced vibhaags of four clocks each. The entire third vibhaag is khaali hence in terms of ratios, 1/4 of the time is khaali and 3/4 has taalis. This is a more typical distribution. This uneven distribution makes step_eleven rather choppy. Intuitively, this choppiness should be good for a UX pro
+tocol that is trying to help its user focus on the app they are interacting with through this protocol. All actions in the protocol, both by the user and the app occur at the taalis and never in between. This is along the lines of conventions used in vocal music on laying out the music over a rhythm (we don't go off-beat yet). The description of the UX protocol then becomes a series of actions by the user or by the app that occur at the taalis of step_eleven. Of course we need a preamble in the protocol where the clock gets initialized and also ways to stop the clock or adjust it anytime during the session. In terms of roles played by the two agents in the conversation, the user plays the role of guru and the app the role of chaelaa (sidekick).
 
 To design a UX protocol for some assisted activity, you help it's user identify what they will do and what they'd like their virtual chaelaa to do in response. You organize this description into a series of activities and then design a unique protocol for each activity. That description is a set of events occuring at the step_eleven taalis of a sequence of cycles. Each event is described in terms of what if anything the guru does to initiate some actions from the chaelaa and what the chaelaa does in response to a previous request by the guru. There are input side actions from the guru in terms of keystrokes made for a specific keyboard layout associated with the event and output and processor side actions in terms of the computational processing initiated by the chaelaa on the processor and the information displayed to the 400x240 screen.
 
@@ -133,13 +134,63 @@ If we think of the interaction session as an interactive movie track, that track
 
 Phases (1-3) and (3-5) end with space bar taps, they are both simple states to implement.
 Let's design the state machine for phase 7.
-There are 3 steps and they have th following sub-steps
+There are 3 steps and they have the following sub-steps
 
 7a: (i), (ii) and (iii),
 7b: (i), (ii) and (iii),
 7c: Just one
 
-We'll now create a codebase that will realize our goals and check it in.
+We'll now create a codebase that will realize our goals and check it in. We have a codebase for another retro style app we're writing that does not involve any sound. The terms phase, step and sub-step used previously come from the terminology of that codebase. We'll retain the app's state machine implementation architecture and it's display and animation architecture and merge its Winmain and WndProc with that of Sound Characterization 2's. Then fill in the new code needed to get it to work and have the tanpura track ready by Saturday, Jan 3rd. Then get the tabla track ready by Jan 8th and the final multi-track live tracks ready by the 13th. This is a rough schedule based on some guessing at the incremental complexity of the 2nd and 3rd milestones.
+
+App design:
+The app will have two threads. One, an OS thread, that is looking for events related
+to the app (in our case, mostly keyboard events) and calling our WndProc Windows 
+event handler. The second, the ASIO driver thread that calls us when the sound 
+buffers need to be processed. During this time, we not only process the buffers, 
+but also update the screen. This way, we don't need a separate drawing thread. 
+At a typical buffer size of 1024 samples and frequency of 44.1KHz, that means we 
+get called about 44 times a second which is a very fast refresh rate. Also, the 
+current state of the screen and changes made in it since the last update need to be 
+stored in a global structure that will be updated by functions that are called in 
+responce to keyboard input by the user. Let's design this structure, and the draw 
+function that reads from it to draw the current state of the (sub)screen 44 times 
+a second.
+
+9/1/14
+We changed this screen management architecture. The OS UI thread sends messages to 
+the state respond functions when the user makes some input. We can get access to the
+screen and update it immediately, in this thread for a more responsive screen, instead 
+of storing the update in a structure and having the sound buffer thread do the
+drawing. That thread should only update the screen in case the sound buffer
+processors need to do so. Effectively, the sound input/output related display
+component, which is dynamic and driven by the app should be associated only with
+the BufferSwitch callback and the user driven updates should be done in the separate 
+UI thread. Of course this means both drawing functions should have some knowledge
+of what each other is doing so as to maintain a consistent screen. To access the 
+screen, the thread must get the current device context. This acts like a 
+synchronization mechanism between the thread (TODO: verify that GetDC blocks if the 
+DC is not available).
+
+To keep things simple, when the sound buffer thread is animating a sub-port of 
+the port with a visual graph of the signal, the UI thread will only draw in an area 
+outside the animating sub-port. There will be a strip all around the port where the
+UI thread may draw. The UI thread may draw in the sub-port area by first disabling the draw
+of the sound buffer thread (there will be a global for that). It must re-enable that
+boolean for the animation to restart. By not stopping ASIO while doing this, the 
+sound processing will continue uninterrupted. An example scenario where this would 
+be needed would be if the user presses the 'H' key to bring up help. We can 
+implement this feature after the Fat Lie Kebab release, which will have no help.  
+
+For the initial draw when the app is launched or when the app switches into context,
+we will have a special function in main.c that draws the entire screen and then
+calls the show of the current state to draw the viewport.9/1/14
+
+Let's start with the recorded file editing scenario for the tanpura as the the most graphically rich use-case.
+
+Progress Note:
+We missed our tanpura track ready milestone (3rd). Now we're combining it's functionality with the tabla track ready milestone and shooting for that on the 8th as earlier planned. We've been a little lazy getting off the tracks on the coding. We're a bit rusty in that department as of now. 
+
+We've decided to change tack a little, and work on getting the whole design ready so that we don't replicate effort and because, it seems to make sense to document our process in the code. The convention we are following is to use /** style comments and add a serial number to designate the sequence in which the comments were added. The // style comments which are typically shorter and inline, we are not including in our sequencing.
 
 
 
