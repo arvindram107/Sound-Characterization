@@ -295,17 +295,45 @@ user message that should go to a known area of the screen for consistency in the
 
 Let's now make our first design of the descriptor for the task at hand.
 These are the tasks the app will perform:
-1Playing a tuning tone
-2Recording the tanpura track
-3Recording the tabla track
-4Recording the live track
-5Syncing the live track with the tabla track
-6Playing back the final mix
-Let's also describe the user's expected activity during the session to make it
-a 2 way protocol giving some knowledge to the app about the user for future
+1.Playing a tuning tone
+2.Recording the tanpura track
+3.Recording the tabla track
+4.Recording the live track
+5.Syncing the live track with the tabla track
+6.Playing back the final mix
+Let's also describe the user's expected activity during the session
+giving some knowledge to the app about the user for future
 elements in the protocol based on an understanding of what the user is doing
 and not just through the phases in the protocol that the user has explicitly 
 called out.
+
+Note: As a design practice, it helps to keep as much of the design in your
+mind (i.e. remember it) rather than relying on this tool to tell you what you wrote
+earlier and where you were last time you left. Doing this helps you work on the 
+design even when you are not at your PC, at random times, which helps spark lateral
+thinking.
+
+User powers up system, launches app
+   App Plays Drone
+       User signals
+           App stops drone and starts recording channels 1 & 2
+              User signals
+                  App stops recording and laucnhes multi-tracker
+User records more layer tracks for the final mix
+   User signals
+      App starts recording new track
+         User signals
+            App stops recording saves track with latency info
+
+Of most interest in the design is what the app will be doing. The specific tasks
+that the app does will fall into two categories, getting stuff done using existing 
+libraries such as Win32 and for example what will become Khitchdee's new sound
+library once this app gets fleshed out, and defining new functionality through 
+fresh functions which will then go into Khitchdee's (hopefully) growing library of 
+functions. While the former can be automated to a large degree since the functions
+are well known, the latter will need more extensive coding and new functions. We 
+will define ways to properly describe functions so that they may be effectively 
+indexed by our design tools (Retro-Coding).  
 
 */
 
