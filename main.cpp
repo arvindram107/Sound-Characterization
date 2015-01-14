@@ -1,9 +1,34 @@
+/* 3. This file contains the application level descriptions which is a like a
+shell that manages the sound buffers and the keyboard inputs and outputs. The actual
+work of handling keyboard input and taking the associated actions gets in in the 
+states of the state machine that runs the show. The app has access to that through
+a matrix of function pointers and indices into that matrix to indicate which element
+to fire currently. That index is altered by the states to change state. This 
+architecture comes from the Fifth Version project of the Inck codebase. We need 
+to move all the action oriented stuff that is integrated in the Sound Characterization 2
+main.c file to the states in a new state machine that we define based on the analysis so 
+far in the README.md file. As a first step, let's redefine the state machine to match up 
+with our phases, steps and sub-steps, then implement the required actions. We want to 
+have a tanpura, tabla and guitar track ready by the 8th, so that we can focus on 
+multi-tracking and get the live track recorded in the last 5 days.
+*/ 
+
+/* 1. We're starting with the ASIO ready main file and adding in functions 
+for all the state machine keyboard UI parts.
+*/
+
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
 #include "asiosys.h"
 #include "asio.h"
 #include "asiodrivers.h"
+
+#include "Phases/Phases.h"
+#include "Screen/Screen.h"
+
+extern HWND g_hWnd;
+extern BOOL g_bScreenInitialized;
 
 LRESULT CALLBACK WndProc(
                     HWND hwnd, 
@@ -20,6 +45,7 @@ int WINAPI WinMain(
 			  ); 
 
 
+#define AUDIO_BUFFER_SIZE 1024
 #define ASIO_DRIVER_NAME  "Fast Track C600 ASIO"
 #define TwoPow31Minus1 2147483647
 #define TwoPi 6.28318531
@@ -103,11 +129,31 @@ ASIOTime *bufferSwitchTimeInfo(ASIOTime *timeInfo, long index, ASIOBool processN
 void sampleRateChanged(ASIOSampleRate sRate);
 long asioMessages(long selector, long value, void* message, double* opt);
 
-void respond_keystroke( UINT Message, WPARAM wParam, LPARAM lParam );
-void load_buffer( int *pnBuffer, int nLeftOrRight );
-void store_buffer( int *pnBuffer, int nLeftOrRight );
+#define MIXER_STATE_a 0
+#define MIXER_STATE_b 1
+#define MIXER_STATE_c 2
+#define MIXER_STATE_d 3
+#define MIXER_STATE_e 4
 
-FILE * g_pFileTemp;
+
+unsigned int g_uMixerState = MIXER_STATE_a;
+
+void load_stereo_buffer( int *pnBuffer, int nLeftOrRight );
+void load_tone( int *pnBuffer, int nLeftOrRight );
+void load_tanpura( int *pnBuffer, int nLeftOrRight );
+void load_tanpura_tabla( int *pnBuffer, int nLeftOrRight );
+void load_tanpura_tabla_guitar( int *pnBuffer, int nLeftOrRight );
+void load_all_tracks( int *pnBuffer, int nLeftOrRight );
+void store_stereo_buffer( int *pnBuffer, int nLeftOrRight );
+
+void  load_tanpura_buffer( int * pnBuffer, int nLeftOrRight );
+void  load_tabla_buffer( int * pnBuffer, int nLeftOrRight );
+void  load_guitar_buffer( int * pnBuffer, int nLeftOrRight );
+void  load_live_buffer( int * pnBuffer, int nLeftOrRight );
+
+FILE * g_pFileLive;
+
+
 
 // This is where all the input to the window goes to
 LRESULT CALLBACK WndProc(
@@ -117,23 +163,34 @@ LRESULT CALLBACK WndProc(
 					LPARAM lParam
                     ) 
 {
-	switch(Message) 
-	{
-		case WM_CREATE: 
-			// this creates a full-screen window
-            ShowWindow(hwnd, SW_MAXIMIZE);
-			break;
-		case WM_DESTROY: 
-			PostQuitMessage(0);
-			break;
-		case WM_KEYDOWN:
-			respond_keystroke( Message, wParam, lParam );
-			break;
-		default:
-			return DefWindowProc(hwnd, Message, wParam, lParam);
-	}
-	return 0;
+   PAINTSTRUCT ps;
+   RECT rectScreen;
+
+
+   switch (message)
+   {
+	  case WM_CREATE:
+         ShowWindow(hWnd, SW_MAXIMIZE);
+         g_hWnd = hWnd;
+	  break;
+      case WM_PAINT:
+		 g_hWnd = hWnd;
+		 BeginPaint( hWnd, &ps );
+		 GetClientRect( hWnd, &rectScreen );
+		 // paint the current screen( ps.hdc, rectScreen );
+       EndPaint( hWnd, &ps );
+	  break;
+	  break;
+      case WM_DESTROY:
+         PostQuitMessage(0);
+      break;
+      default:
+         return DefWindowProc(hWnd, message, wParam, lParam);
+      break;
+   }
+   return 0;
 }
+
 
 void respond_keystroke( UINT Message, WPARAM wParam, LPARAM lParam )
 {
@@ -227,7 +284,7 @@ int WINAPI WinMain(
 		return 0;
 	}
 
-   g_pFileTemp = fopen( "temp.raw", "wb" );
+   g_pFileLive = fopen( "temp.raw", "wb" );
 
    // load ASIO driver
     // Init ASIO, (allocate the buffers)
@@ -256,10 +313,26 @@ int WINAPI WinMain(
 				asioCallbacks.bufferSwitchTimeInfo = &bufferSwitchTimeInfo;
 				if (create_asio_buffers (&asioDriverInfo) == ASE_OK)
 				{
+               // ASIO is now ready to be used.
+               // run the apps message pump giving priority to keyboard messages
                while(GetMessage(&Msg, NULL, 0, 0) > 0) 
 				   { 
-                  TranslateMessage(&Msg); // Translate keycodes to chars if present 
-	               DispatchMessage(&Msg); // Send it to WndProc 
+	               if( Msg.message == WM_KEYDOWN || Msg.message == WM_KEYUP )
+                  { // if its a keyboard message, gets its registration time
+		              // and directly process it with the function array
+                     long lTime = GetMessageTime();
+		               g_ppfnRespond[g_uCurrentPhase]( 
+		                  Msg.message, 
+			               Msg.wParam, 
+			               Msg.lParam,
+			               lTime
+			                                          );
+                  }
+	               else 
+                  {	 // for non-keyboard messages, follow the usual route
+                     TranslateMessage(&msg);
+                     DispatchMessage(&msg);
+                  }
 				   }
                if( !asioDriverInfo.stopped )
 				   {
@@ -272,7 +345,7 @@ int WINAPI WinMain(
 		}
 		asioDrivers->removeCurrentDriver();
 	}
-   fclose( g_pFileTemp );
+   fclose( g_pFileLive );
 	return Msg.wParam;
 }
 
@@ -349,69 +422,22 @@ long init_asio_static_data (DriverInfo *asioDriverInfo)
 #endif
 
 ASIOTime *bufferSwitchTimeInfo(ASIOTime *timeInfo, long index, ASIOBool processNow)
-{	// the actual processing callback.
-	// Beware that this is normally in a seperate thread, 
-   // hence be sure that you take care of thread synchronization. 
-   // This is omitted here for simplicity.
-	static long processedSamples = 0;
-
-	// store the timeInfo for later use
-	asioDriverInfo.tInfo = *timeInfo;
-
-	// get the time stamp of the buffer, not necessary if no
-	// synchronization to other media is required
-	if (timeInfo->timeInfo.flags & kSystemTimeValid)
-		asioDriverInfo.nanoSeconds = ASIO64toDouble(timeInfo->timeInfo.systemTime);
-	else
-		asioDriverInfo.nanoSeconds = 0;
-
-	if (timeInfo->timeInfo.flags & kSamplePositionValid)
-		asioDriverInfo.samples = ASIO64toDouble(timeInfo->timeInfo.samplePosition);
-	else
-		asioDriverInfo.samples = 0;
-
-	if (timeInfo->timeCode.flags & kTcValid)
-		asioDriverInfo.tcSamples = ASIO64toDouble(timeInfo->timeCode.timeCodeSamples);
-	else
-		asioDriverInfo.tcSamples = 0;
-
-	// get the system reference time
-	asioDriverInfo.sysRefTime = get_sys_reference_time();
-
-#if _DEBUG
-	// a few debug messages for the Windows device driver developer
-	// tells you the time when driver got its interrupt and the delay 
-   // until the app receives the event notification.
-	static double last_samples = 0;
-	char tmp[128];
-	sprintf(
-	   tmp, 
-	   "diff: %d / %d ms / %d ms / %d samples                 \n", 
-	   asioDriverInfo.sysRefTime - (long)(asioDriverInfo.nanoSeconds / 1000000.0), 
-	   asioDriverInfo.sysRefTime, 
-	   (long)(asioDriverInfo.nanoSeconds / 1000000.0), 
-	   (long)(asioDriverInfo.samples - last_samples)
-	   );
-	OutputDebugString (tmp);
-	last_samples = asioDriverInfo.samples;
-#endif
-
-	// buffer size in samples
-	long buffSize = asioDriverInfo.preferredSize;
-
+{	
 	// perform the processing
+   // assuming 2 input and 2 output channles, 32 bit int format samples and 44.1KHz 
+   // sampling rate
 	for (int i = 0; i < asioDriverInfo.inputBuffers + asioDriverInfo.outputBuffers; i++)
 	{
 		if (asioDriverInfo.bufferInfos[i].isInput == false)
 		{
-         load_buffer( 
+         load_stereo_buffer( 
             (int *)asioDriverInfo.bufferInfos[i].buffers[index], 
             (i%2)
             );
 		}
       else
       {
-         store_buffer(
+         store_stereo_buffer(
             (int *)asioDriverInfo.bufferInfos[i].buffers[index], 
             (i%2)
             );
@@ -422,8 +448,6 @@ ASIOTime *bufferSwitchTimeInfo(ASIOTime *timeInfo, long index, ASIOBool processN
 	// finally if the driver supports the ASIOOutputReady() optimization, do it here, all data are in place
 	if (asioDriverInfo.postOutput)
 		ASIOOutputReady();
-
-   processedSamples += buffSize;
 
 	return 0L;
 }
@@ -574,7 +598,7 @@ ASIOError create_asio_buffers (DriverInfo *asioDriverInfo)
 	// create and activate buffers
 	result = ASIOCreateBuffers(asioDriverInfo->bufferInfos,
 		asioDriverInfo->inputBuffers + asioDriverInfo->outputBuffers,
-		asioDriverInfo->preferredSize, &asioCallbacks);
+		AUDIO_BUFFER_SIZE, &asioCallbacks);
 	if (result == ASE_OK)
 	{
 		// now get all the buffer details, sample word length, 
@@ -612,25 +636,166 @@ unsigned long get_sys_reference_time()
 {	// get the system reference time
    return timeGetTime();
 }
-   
-void load_buffer( int *pnBuffer, int nLeftOrRight )
+ 
+
+/** 4. This code now needs to load one or more of a few different sound sources
+in the system such as tanpura, tabla, guitar and live tracks in a mutli-tracking 
+setup. We need a descriptor for the current mix to be played back and this function
+needs to read that and playback the desired tracks from the desired locations.
+
+*/     
+void load_stereo_buffer( int *pnBuffer, int nLeftOrRight )
 {
    static int nBufferIndex = 0;
-   // load a sinewave at 275Hz into both left and right channels
-   int nOffset = nBufferIndex * 256;
-   for( int i=0; i<256; i++ )
+   // load for one of five different states:
+   int nOffset = nBufferIndex * AUDIO_BUFFER_SIZE;
+   switch( g_uMixerState )
    {
-   	pnBuffer[i] = (int) (TwoPow31Minus1 * sin( TwoPi * ((i+nOffset)*275.0)/44100.0));
+   case MIXER_STATE_a: // load a 275Hz drone into both channels
+      load_tone( pnBuffer, nLeftOrRight );
+      break;
+   case MIXER_STATE_b: // tanpura
+      load_tanpura( pnBuffer, nLeftOrRight );
+      break;
+   case MIXER_STATE_c: // tanpura and tabla
+      load_tanpura_tabla( pnBuffer, nLeftOrRight );
+      break;
+   case MIXER_STATE_d: // tanpura, tabla, guitar
+      load_tanpura_tabla_guitar( pnBuffer, nLeftOrRight );
+      break;
+   case MIXER_STATE_e: // 3 synth tracks + live track
+      load_all_tracks( pnBuffer, nLeftOrRight );
+      break;
+   default:
+      // toto handle error
+      break;
+   }
+   return;
+}
+
+// load a sinewave at 275Hz into both left and right channels
+void load_tone( int *pnBuffer, int nLeftOrRight )
+{
+   static int nBufferIndex = 0;
+   // load for one of five different states:
+   int nOffset = nBufferIndex * AUDIO_BUFFER_SIZE;
+   for( int i=0; i<AUDIO_BUFFER_SIZE; i++ )
+   {
+      pnBuffer[i] = (int) (TwoPow31Minus1 * sin( TwoPi * ((i+nOffset)*275.0)/44100.0));
    }
    if( nLeftOrRight == 1 )
    {
    	nBufferIndex++;
    }
+}
+
+void load_tanpura( int *pnBuffer, int nLeftOrRight )
+{
+   // load the next buffer from the tanpura looper to pnBuffer
+   load_tanpura_buffer( pnBuffer, nLeftOrRight );
+}
+
+void load_tanpura_tabla( int *pnBuffer, int nLeftOrRight )
+{
+   // load the next buffer from the tanpura looper to g_pnBus[0]
+   load_tanpura_buffer( g_pnBus[0], nLeftOrRight );
+   // load the next buffer from the tabla looper to g_pnBus[1]
+   load_tabla_buffer( g_pnBus[1], nLeftOrRight );
+   // mixdown to pnBuffer
+   for( int i=0; i<AUDIO_BUFFER_SIZE; i++ )
+   {
+      pnBuffer[i] = (g_pnBus[0][i] + g_pnBus[1][i])>>1;
+   }
+}
+
+void load_tanpura_tabla_guitar( int *pnBuffer, int nLeftOrRight )
+{
+   // load the next buffer from the tanpura looper to g_pnBus[0]
+   load_tanpura_buffer( g_pnBus[0], nLeftOrRight  );
+   // load the next buffer from the tabla looper to g_pnBus[1]
+   load_tabla_buffer( g_pnBus[1], nLeftOrRight );
+   // load the next buffer from the guitar looper to g_pnBus[2]
+   load_guitar_buffer( g_pnBus[2], nLeftOrRight );
+   // mixdown to pnBuffer
+   for( int i=0; i<AUDIO_BUFFER_SIZE; i++ )
+   {
+      pnBuffer[i] = ((g_pnBus[0] + g_pnBus[1])>>1 + g_pnBus[2])>>1;
+   }
+}
+
+void load_all_tracks( int *pnBuffer, int nLeftOrRight )
+{
+   // load the next buffer from the tanpura looper to g_pnBus[0]
+   load_tanpura_buffer( g_pnBus[0], nLeftOrRight );
+   // load the next buffer from the tabla looper to g_pnBus[1]
+   load_tabla_buffer( g_pnBus[1], nLeftOrRight );
+   // load the next buffer from the guitar looper to g_pnBus[2]
+   load_guitar_buffer( g_pnBus[2], nLeftOrRight );
+   // load the next buffer from the live mix to g_pnBus[3]
+   load_live_buffer( g_pnBus[3], nLeftOrRight );
+   // mixdown to pnBuffer
+   for( int i=0; i<AUDIO_BUFFER_SIZE; i++ )
+   {
+      pnBuffer[i] = (((g_pnBus[0] + g_pnBus[1])>>1 + g_pnBus[2])>>1 + g_pbBus[3])>>1;
+   }
+}
+
+void  load_tanpura_buffer( int * pnBuffer, int nLeftOrRight )
+{
+   // keep track of which buffer you are processing for the timing sync.
+   // static init the current buffer to 0
+   // load the next set of samples for the buffer.
+   //    if the samples are in fader range, perform the fade and load the result
+   //    else just load the samples from the current tanpura file.
+   // if it's the right buffer, update the current buffer index
+}
+
+void  load_tabla_buffer( int * pnBuffer, int nLeftOrRight )
+{
+
+}
+
+void  load_guitar_buffer( int * pnBuffer, int nLeftOrRight )
+{
+
+}
+
+void  load_live_buffer( int * pnBuffer, int nLeftOrRight )
+{
+   // For all the live tracks in the current mix,
+   //    based on the current buffer being processed
+   //    determine, which track are in the mix.
+   //    Mix down those tracks into pnBuffer
+}
+
+/** 5. Similarly, this code will need to read some information about how the
+current sound inputs need to be processed and vector out to those functions
+instead of this current hard-coded storage function.
+*/
+void store_stereo_buffer( int *pnBuffer, int nLeftOrRight )
+{
+   fwrite( pnBuffer, sizeof(int), AUDIO_BUFFER_SIZE, g_pFileLive );
    return;
 }
 
-void store_buffer( int *pnBuffer, int nLeftOrRight )
-{
-   fwrite( pnBuffer, sizeof(int), 256, g_pFileTemp );
-   return;
-}
+/** 6. Let's analyze, based on all our app requirements for the final 
+release what kind of sound-stream multiplexing needs to be done at both ends.
+On the playback side, the source mix is either
+a. A tuning drone
+b. A tanpura
+c. A tabla and a tanpura
+d. A guitar, a tabla and a tanpura
+e. A live track with the three looped tracks.
+On the input side, the destination is always to a stereo file. Later, as we start 
+analysing the signals, the destination will become a sound characterizer. So we 
+can design for these two types of live sound destinations in our multiplexer design.
+
+  In the current app, the driver's preferred size for our driver is 256. This has 
+  been hardcoded into both load and store. Let's change the buffer size to
+  1024 and exit the app if that's not supported, since we don't want more than
+  44 display updates a second.
+*/
+
+
+
+
